@@ -4,14 +4,14 @@
 			by Vash Baldeus
 				v1.1
 				
-		Extensively edited by The Realist
-			for Reverse Logic Gaming
+			Extensively edited by The Realist
+				for Reverse Logic Gaming
 
 */
 
 if ( CLIENT) then
 	timer.Create("TauntMenuUse",120,0, function()
-											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(120,200,255)," To open the menu press F3")//Chat message for player.
+											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(120,200,255)," To open the menu press F3, or Fn + F3")//Chat message for player.
 										end)
 	local ButtonTextColor	=	Color(255,255,255,255)
 	local pl				=	LocalPlayer();			//Assign pl as LocalPlayer().
@@ -513,6 +513,7 @@ if ( CLIENT) then
 			p1_base.Paint = function()
 								draw.RoundedBox( 8, 0, 0, p1_base:GetWide(), p1_base:GetTall(), MenuColor )
 							end
+							
 		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Random Taunt Button
 			p1_base_bX:SetSize(45, 23)
 			p1_base_bX:SetPos(125, 5)
@@ -528,6 +529,7 @@ if ( CLIENT) then
 								net.SendToServer()
 								p1_base:Close() pl.MenuOpen=0;
 									end
+									
 		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Close Menu Button
 			p1_base_bX:SetSize(35, 25)
 			p1_base_bX:SetPos(69, 535)
@@ -541,6 +543,8 @@ if ( CLIENT) then
 										p1_base:Close()
 										pl.MenuOpen=0;
 									end
+									
+		if bnp > 0 then
 		local p1_base_bPrv = vgui.Create( "DButton", p1_base )	//Previous Page Button
 			p1_base_bPrv:SetSize(55, 25)
 			p1_base_bPrv:SetPos(12, 535)
@@ -561,6 +565,9 @@ if ( CLIENT) then
 											hook.Run("phmp",pl)
 											pl.MenuPage2=0;
 										end
+		else end
+		
+		if bnp < (table.Count(propButton) - 14) then
 		local p1_base_bNxt = vgui.Create( "DButton", p1_base )	//Next Page Button
 			p1_base_bNxt:SetSize(55, 25)
 			p1_base_bNxt:SetPos(107, 535)
@@ -578,6 +585,7 @@ if ( CLIENT) then
 										else end
 										hook.Run("phmp",pl)
 									end	
+		end
 		
 		if propButton[bnp + 1] != nil then
 		local b1 = vgui.Create("DButton", p1_base)	//Button1
@@ -862,6 +870,7 @@ if ( CLIENT) then
 			p1_base.Paint = function()
 								draw.RoundedBox( 8, 0, 0, p1_base:GetWide(), p1_base:GetTall(), MenuColor )
 							end
+							
 		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Random Taunt Button
 			p1_base_bX:SetSize(45, 23)
 			p1_base_bX:SetPos(125, 5)
@@ -877,6 +886,7 @@ if ( CLIENT) then
 								net.SendToServer()
 								p1_base:Close() pl.MenuOpen=0;
 									end
+									
 		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Close Menu Button
 			p1_base_bX:SetSize(35, 25)
 			p1_base_bX:SetPos(69, 535)
@@ -890,6 +900,9 @@ if ( CLIENT) then
 										p1_base:Close()
 										pl.MenuOpen=0;
 									end
+		
+		if bnh > 0 then
+		
 		local p1_base_bPrv = vgui.Create( "DButton", p1_base )	//Previous Page Button
 			p1_base_bPrv:SetSize(55, 25)
 			p1_base_bPrv:SetPos(12, 535)
@@ -910,6 +923,9 @@ if ( CLIENT) then
 											hook.Run("phmh",pl)
 											pl.MenuPage2=0;
 										end
+		else end
+		
+		if bnh < (table.Count(hunterButton) - 14) then
 		local p1_base_bNxt = vgui.Create( "DButton", p1_base )	//Next Page Button
 			p1_base_bNxt:SetSize(55, 25)
 			p1_base_bNxt:SetPos(107, 535)
@@ -926,7 +942,8 @@ if ( CLIENT) then
 											pnh = pnh + 1
 										else end
 										hook.Run("phmh",pl)
-									end	
+									end
+		else end
 		
 		if hunterButton[bnh + 1] != nil then
 		local b1 = vgui.Create("DButton", p1_base)	//Button1

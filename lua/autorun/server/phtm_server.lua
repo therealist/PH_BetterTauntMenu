@@ -1,5 +1,5 @@
 if ( SERVER )	then 
-	local TAUNT_DELAY = 3		//Taunt Delay Variable
+	local TAUNT_DELAY = 6		//Taunt Delay Variable
 
 	util.AddNetworkString("send_taunt")
 	net.Receive( "send_taunt", function( _, ply )
@@ -10,6 +10,8 @@ if ( SERVER )	then
 			if ply:Alive() then
 				ply:EmitSound(taunt,150)
 			else end
+		else
+			ply:ChatPrint("Please wait another " .. string.NiceTime( math.abs( curTime - (TAUNT_DELAY + ply.LastTaunt) ) ) .. " seconds before taunting again")
 		end
 	end )
 end

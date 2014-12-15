@@ -4,7 +4,7 @@
 			by Vash Baldeus
 				v1.1
 				
-		Modified extensively by The Realist
+		Extensively edited by The Realist
 			for Reverse Logic Gaming
 
 */
@@ -501,7 +501,7 @@ if ( CLIENT) then
 	local ButtonBGColor	= Color(BTCR,BTCG,BTCB,255)
 		 p1_base = vgui.Create( "DFrame")//Menu Frame.
 			p1_base:SetSize(176, 571) 
-			p1_base:SetPos(0,ScrH()-932)//932, old 779
+			p1_base:SetPos(0,(ScrH() / 2)-285)//932, old 779
 			p1_base:SetTitle(team.GetName( LocalPlayer():Team() ).." - Page " .. pnp)
 			p1_base:SetVisible( true )
 			p1_base:SetDeleteOnClose(false)
@@ -850,7 +850,7 @@ if ( CLIENT) then
 	local ButtonBGColor	= Color(BTCR,BTCG,BTCB,255)
 		p1_base = vgui.Create( "DFrame")//Menu Frame.
 			p1_base:SetSize(176, 571) 
-			p1_base:SetPos(0,ScrH()-932)//932, old 779
+			p1_base:SetPos(0,(ScrH() / 2)-285)//932, old 779
 			p1_base:SetTitle(team.GetName( LocalPlayer():Team() ).." - Page " .. pnh)
 			p1_base:SetVisible( true )
 			p1_base:SetDeleteOnClose(false)

@@ -1,0 +1,6 @@
+"AddonInfo"
+{
+	"name" "Better Prop Hunt Taunt Menu"
+	"author_name" "Author Name"
+	"info" " { 	"description": "Description", 	"type": "tool", 	"tags":  	[ 		"fun", 		"roleplay" 	] }"
+}

@@ -1222,7 +1222,11 @@ if ( CLIENT) then
 		local func = RandTauntK[ key ];
 		if ( func ) then  
 			net.Start("send_taunt")
-			net.WriteString(table.Random(propWString))
+			if p:Team() == TEAM_HUNTERS then
+				net.WriteString(table.Random(hunterWString))
+			elseif p:Team() == TEAM_PROPS then
+				net.WriteString(table.Random(propWString))
+			end
 			net.SendToServer();
 		end 
 	end);

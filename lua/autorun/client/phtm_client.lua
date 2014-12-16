@@ -1213,4 +1213,19 @@ if ( CLIENT) then
 			_func( LocalPlayer() );
 		end 
 	end);
+	
+	local RandTauntK = {
+	KEY_C = IsAlive;
+	};
+	hook.Add( "PlayerBindPress", "RandTaunt", function( p, bind, press )
+		local key = "KEY_" .. string.upper( input.LookupBinding( bind ) );
+		local func = RandTauntK[ key ];
+		if ( func ) then  
+			net.Start("send_taunt")
+			net.WriteString(table.Random(propWString))
+			net.SendToServer();
+		end 
+	end);
+		
 end
+

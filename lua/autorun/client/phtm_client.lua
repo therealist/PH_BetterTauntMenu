@@ -11,7 +11,7 @@
 
 if ( CLIENT) then
 	timer.Create("TauntMenuUse",120,0, function()
-											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(120,200,255)," To open the menu press F3, or Fn + F3")//Chat message for player.
+											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(0,255,50)," To open the menu press F3 or Fn + F3, or press C to random taunt")//Chat message for player.
 										end)
 	local ButtonTextColor	=	Color(255,255,255,255)
 	local pl				=	LocalPlayer();			//Assign pl as LocalPlayer().
@@ -461,7 +461,7 @@ if ( CLIENT) then
 					p1_base:SetVisible(true)
 					pl.MenuOpen=1;
 				else
-					chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,126)," You must be in one of the teams to use the menu.")
+					chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You must be in one of the teams to use the menu.")
 				end
 		elseif ( pl:Alive() && pl.MenuOpen !=0 ) then 
 			if pl:Team() == TEAM_HUNTERS then
@@ -476,7 +476,7 @@ if ( CLIENT) then
 				pl.MenuOpen=0;
 			end
 		else
-			chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,126)," You are dead, you need to be alive to use this.")//Chat message for player.
+			chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You are dead, you need to be alive to use this.")//Chat message for player.
 		end	
 	end
 	 
@@ -1221,13 +1221,21 @@ if ( CLIENT) then
 		local key = "KEY_" .. string.upper( input.LookupBinding( bind ) );
 		local func = RandTauntK[ key ];
 		if ( func ) then  
-			net.Start("send_taunt")
-			if p:Team() == TEAM_HUNTERS then
-				net.WriteString(table.Random(hunterWString))
-			elseif p:Team() == TEAM_PROPS then
-				net.WriteString(table.Random(propWString))
+			if p:Alive() then
+				if p:Team() == TEAM_HUNTERS then
+					net.Start("send_taunt")
+					net.WriteString(table.Random(hunterWString))
+					net.SendToServer();
+				elseif p:Team() == TEAM_PROPS then
+					net.Start("send_taunt")
+					net.WriteString(table.Random(propWString))
+					net.SendToServer();
+				else
+					chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You must be in one of the teams to play a random taunt.")
+				end
+			else
+				chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You are dead, you need to be alive to random taunt.")
 			end
-			net.SendToServer();
 		end 
 	end);
 		

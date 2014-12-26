@@ -11,7 +11,7 @@
 
 if ( CLIENT) then
 	timer.Create("TauntMenuUse",120,0, function()
-											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(0,255,50)," To open the menu press F3 or Fn + F3, or press C to random taunt")//Chat message for player.
+											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(120,200,255)," To open the menu press F3, or Fn + F3")//Chat message for player.
 										end)
 	local ButtonTextColor	=	Color(255,255,255,255)
 	local pl				=	LocalPlayer();			//Assign pl as LocalPlayer().
@@ -49,7 +49,7 @@ if ( CLIENT) then
 	"Inner Circle Bad Boys",
 	"Blood Rave",
 	"Eric Prydz Call on Me",
-	"The One and Only",
+--//	"The One and Only",
 	"AoE 2 Healer",
 	"You call that a gun?",
 	"MGS Alert",
@@ -231,7 +231,7 @@ if ( CLIENT) then
 	"taunts/props/31.mp3",
 	"taunts/props/32.mp3",
 	"taunts/props/33.mp3",
-	"taunts/props/34.mp3",
+--//	"taunts/props/34.mp3",
 	"taunts/props/35.mp3",
 	"taunts/props/agun.mp3",
 	"taunts/props/alert2.mp3",
@@ -461,7 +461,7 @@ if ( CLIENT) then
 					p1_base:SetVisible(true)
 					pl.MenuOpen=1;
 				else
-					chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You must be in one of the teams to use the menu.")
+					chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,126)," You must be in one of the teams to use the menu.")
 				end
 		elseif ( pl:Alive() && pl.MenuOpen !=0 ) then 
 			if pl:Team() == TEAM_HUNTERS then
@@ -476,7 +476,7 @@ if ( CLIENT) then
 				pl.MenuOpen=0;
 			end
 		else
-			chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You are dead, you need to be alive to use this.")//Chat message for player.
+			chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,126)," You are dead, you need to be alive to use this.")//Chat message for player.
 		end	
 	end
 	 
@@ -1203,41 +1203,21 @@ if ( CLIENT) then
 	hook.Add("phmh","Calling Prop Menu",phmh)//Hook to call phmh(Hunters)
 	hook.Add("TeamCheck","Call check pl.Team()",TeamCheck)//Hook to call TeamCheck
 	
-	local FKeyMenus = {
-		KEY_F3 = IsAlive;
-	};
-	hook.Add( "PlayerBindPress", "PlayerBindPressFKeyMenus", function( _p, _bind, pressed )
-		local _key = "KEY_" .. string.upper( input.LookupBinding( _bind ) );
-		local _func = FKeyMenus[ _key ];
-		if ( _func ) then  
-			_func( LocalPlayer() );
-		end 
-	end);
+	function showspare( ply, bind, pressed )
+		if ( bind == "gm_showspare1" ) then
+			IsAlive(LocalPlayer())
+		end
+	end
+	hook.Add( "PlayerBindPress", "PlayerBindPress", showspare )
 	
-	local RandTauntK = {
-	KEY_C = IsAlive;
-	};
-	hook.Add( "PlayerBindPress", "RandTaunt", function( p, bind, press )
-		local key = "KEY_" .. string.upper( input.LookupBinding( bind ) );
-		local func = RandTauntK[ key ];
-		if ( func ) then  
-			if p:Alive() then
-				if p:Team() == TEAM_HUNTERS then
-					net.Start("send_taunt")
-					net.WriteString(table.Random(hunterWString))
-					net.SendToServer();
-				elseif p:Team() == TEAM_PROPS then
-					net.Start("send_taunt")
-					net.WriteString(table.Random(propWString))
-					net.SendToServer();
-				else
-					chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You must be in one of the teams to play a random taunt.")
-				end
-			else
-				chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,50)," You are dead, you need to be alive to random taunt.")
+	hook.Add( "OnContextMenuOpen", "RandTaunt", function()
+			net.Start("send_taunt")
+			if LocalPlayer():Team() == TEAM_HUNTERS then
+				net.WriteString(table.Random(hunterWString))
+			elseif LocalPlayer():Team() == TEAM_PROPS then
+				net.WriteString(table.Random(propWString))
 			end
-		end 
+			net.SendToServer();
 	end);
-		
-end
 
+end

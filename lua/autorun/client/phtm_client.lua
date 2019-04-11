@@ -1,33 +1,39 @@
-/*
-
-		Taunt Menu for Prop Hunter
-			by Vash Baldeus
-				v1.1
-				
-			Extensively edited by The Realist
-				for Reverse Logic Gaming
-
-*/
+----------------------------------------------------
+--
+--		Taunt Menu for Prop Hunt
+--			by Vash Baldeus
+--				v1.1
+--				
+--  Extensively edited by The Realist
+--	    for Reverse Logic Gaming
+--
+----------------------------------------------------
 
 if ( CLIENT) then
+--// Chat message
 	timer.Create("TauntMenuUse",120,0, function()
-											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(120,200,255)," To open the menu press F3, or Fn + F3")//Chat message for player.
+											chat.AddText(Color(255,50,0),"[Taunt Menu]", Color(120,200,255)," To open the menu press F3, or Fn + F3. Press C to random taunt.")
 										end)
+										
+--// INIT PARAMETERS
 	local ButtonTextColor	=	Color(255,255,255,255)
-	local pl				=	LocalPlayer();			//Assign pl as LocalPlayer().
-	pl.MenuOpen				=	0;						//Set for player MenuOpen to 0 by default.
-	pl.MenuPage2			=	0;						//Set for player MenuPage3 to 0 by default
-	pl.MenuPage3			=	0;						//Set for player MenuPage3 to 0 by default
-	pl.hMenuPage2			=	0;					
-	pl.hMenuPage3			=	0;
-	bnp = 0
-	pnp = 1
-	bnh = 0
-	pnh = 1
-	menutoggle = 1
-	
-	local propButton={									//Prop Button text list
-	"BOOM HEADSHOT!",
+	local pl				=	LocalPlayer();			--// Assign pl as LocalPlayer().
+	pl.MenuOpen				=	0;						--// Set for player MenuOpen to 0 by default.
+	pl.MenuPage2			=	0;						--// Set for player MenuPage3 to 0 by default
+	pl.MenuPage3			=	0;						--// Set for player MenuPage3 to 0 by default
+	pl.hMenuPage2			=	0;						--// Unused
+	pl.hMenuPage3			=	0;						--// Unused
+	bnp 					= 	0						--// Initialize Prop button number
+	pnp 					= 	1						--// Initialize Prop page number
+	bnh 					= 	0						--// Initialize Hunter button number
+	pnh 					= 	1						--// Initialize Hunter page number
+	menutoggle 				= 	1						--// Initialize menu as closed
+	STORED_TAUNTS 			= 	5						--// Sets the number of played taunts to be stored
+	propplayedtaunts 		= 	{}						--// Initializes the stored Prop played taunts
+	hunterplayedtaunts 		= 	{}						--// Initializes the stored Hunter played taunts
+
+--// Prop Button text list	
+	local propButton={
 	"Homer Doh",
 	"Go away or I shall taunt",
 	"Shamwow",
@@ -49,7 +55,6 @@ if ( CLIENT) then
 	"Inner Circle Bad Boys",
 	"Blood Rave",
 	"Eric Prydz Call on Me",
---//	"The One and Only",
 	"AoE 2 Healer",
 	"You call that a gun?",
 	"MGS Alert",
@@ -136,7 +141,7 @@ if ( CLIENT) then
 	"Predator noise",
 	"Reach-around",
 	"Ready to get fucked up",
-	"Red vs. Blue: There is no eleven",
+	"There is no eleven!",
 	"Robot Chicken ending theme",
 	"Scatman John Scatman",
 	"Scout: Nice try pal",
@@ -206,191 +211,219 @@ if ( CLIENT) then
 	"MGA: Now to look at asses",
 	"Shoot me again, I ain't dead",
 	"Strong Bad: Windows 98",
+	"Big Booty Bitches",
+	"Apollo 440-Can't Stop the Rock",
+	"Fork in the Garbage Disposal",
+	"Tourette's Guy - Fuck Salt",
+	"Epic Meal Time Gay Bacon...",
+	"Gimme Dat Butt!",
+	"Kalluri Vaanil (Benny Lava)",
+	"Not Having Any Mayonnaise",
+	"Pinky and the Brain",
+	"Reading Rainbow stinger",
+	"Spooky Scary Skeletons",
+	"The Bad Touch",
+	"Makes a Man go NOOT NOOT",
+	"Somebody kill me!"
 	}
 
-	local propWString={									//Prop net.WriteString(text)
-	"taunts/props/1.wav",
-	"taunts/props/2.wav",
-	"taunts/props/3.wav",
-	"taunts/props/4.wav",
-	"taunts/props/5.wav",
-	"taunts/props/6.wav",
-	"taunts/props/7.wav",
-	"taunts/props/8.wav",
-	"taunts/props/9.wav",
-	"taunts/props/10.wav",
-	"taunts/props/11.wav",
-	"taunts/props/12.wav",
-	"taunts/props/14.wav",
-	"taunts/props/15.wav",
-	"taunts/props/17.mp3",
-	"taunts/props/18.wav",
-	"taunts/props/19.wav",
-	"taunts/props/20.wav",
-	"taunts/props/30.wav",
-	"taunts/props/31.mp3",
-	"taunts/props/32.mp3",
-	"taunts/props/33.mp3",
---//	"taunts/props/34.mp3",
-	"taunts/props/35.mp3",
-	"taunts/props/agun.mp3",
-	"taunts/props/alert2.mp3",
-	"taunts/props/almostcaught.mp3",
-	"taunts/props/arch_bloody.mp3",
-	"taunts/props/arch_dz.mp3",
-	"taunts/props/attentionwhore.mp3",
-	"taunts/props/balls.mp3",
-	"taunts/props/bananasong.mp3",
-	"taunts/props/barrelroll.mp3",
-	"taunts/props/beepboopson.mp3",
-	"taunts/props/beer1.mp3",
-	"taunts/props/bees1.mp3",
-	"taunts/props/bennyhill.mp3",
-	"taunts/props/blow_it.mp3",
-	"taunts/props/boioing.mp3",
-	"taunts/props/bollockstoyou.mp3",
-	"taunts/props/boondocksaints.mp3",
-	"taunts/props/bugoff.mp3",
-	"taunts/props/bunchofpansies.mp3",
-	"taunts/props/bustedstripper.mp3",
-	"taunts/props/carl.mp3",
-	"taunts/props/cartmansuck.mp3",
-	"taunts/props/cell.mp3",
-	"taunts/props/ch3.mp3",
-	"taunts/props/charge.mp3",
-	"taunts/props/cheese.mp3",
-	"taunts/props/codec2.mp3",
-	"taunts/props/come_get_some.mp3",
-	"taunts/props/coolest.mp3",
-	"taunts/props/cornholio.mp3",
-	"taunts/props/danceallday.mp3",
-	"taunts/props/danglyparts.mp3",
-	"taunts/props/denied.mp3",
-	"taunts/props/doh.mp3",
-	"taunts/props/dontjuststandthere.mp3",
-	"taunts/props/dontmiss.mp3",
-	"taunts/props/downsyndrome.mp3",
-	"taunts/props/dr_evil-frickin_idiots.mp3",
-	"taunts/props/drweird.mp3",
-	"taunts/props/epicsaxguy.mp3",
-	"taunts/props/extreme.mp3",
-	"taunts/props/eyebrow.mp3",
-	"taunts/props/fail.mp3",
-	"taunts/props/firinmahlazah.mp3",
-	"taunts/props/foamydisappointment.mp3",
-	"taunts/props/foamysuckass.mp3",
-	"taunts/props/fs.mp3",
-	"taunts/props/getawayfromme.mp3",
-	"taunts/props/gofuckurself.mp3",
-	"taunts/props/goteamretard.mp3",
-	"taunts/props/haax.mp3",
-	"taunts/props/hellochum.mp3",
-	"taunts/props/heresjohnny.mp3",
-	"taunts/props/hibitch.mp3",
-	"taunts/props/howdoyoufuckthatup.mp3",
-	"taunts/props/iamabanana.mp3",
-	"taunts/props/icphokuspokus.mp3",
-	"taunts/props/imakethislookgood.mp3",
-	"taunts/props/improved.mp3",
-	"taunts/props/indestructible.mp3",
-	"taunts/props/island.mp3",
-	"taunts/props/its_a_trap.mp3",
-	"taunts/props/itssofluffeh.mp3",
-	"taunts/props/kick_ass_and_chew_bubblegum.mp3",
-	"taunts/props/knoboff.mp3",
-	"taunts/props/letsdance.mp3",
-	"taunts/props/lookatscreen.mp3",
-	"taunts/props/loser.mp3",
-	"taunts/props/losinghorn.mp3",
-	"taunts/props/lrtaunt1.mp3",
-	"taunts/props/matrix1.mp3",
-	"taunts/props/mk4_scorpion.mp3",
-	"taunts/props/morecowbell.mp3",
-	"taunts/props/needtopiss.mp3",
-	"taunts/props/nicemodel.mp3",
-	"taunts/props/nixonshutup.mp3",
-	"taunts/props/ohbugger.mp3",
-	"taunts/props/owow.mp3",
-	"taunts/props/owwhatthe.mp3",
-	"taunts/props/patbottom.mp3",
-	"taunts/props/pissin.mp3",
-	"taunts/props/poopchute.mp3",
-	"taunts/props/predator.mp3",
-	"taunts/props/reacharound.mp3",
-	"taunts/props/readytoget.mp3",
-	"taunts/props/redvsbluenoeleven.mp3",
-	"taunts/props/robotchicken.mp3",
-	"taunts/props/scatman.mp3",
-	"taunts/props/scout1.mp3",
-	"taunts/props/screamgoat.mp3",
-	"taunts/props/seethatcoming.mp3",
-	"taunts/props/shit.mp3",
-	"taunts/props/shithimself.mp3",
-	"taunts/props/shutyourfuckingmouth.mp3",
-	"taunts/props/slow1.mp3",
-	"taunts/props/smb_star.mp3",
-	"taunts/props/smell_u.mp3",
-	"taunts/props/solong.mp3",
-	"taunts/props/stopblowingholes.mp3",
-	"taunts/props/suckstobeme.mp3",
-	"taunts/props/sweetbeer1.wav",
-	"taunts/props/thisiscrazy.mp3",
-	"taunts/props/thx.mp3",
-	"taunts/props/tightspot2.mp3",
-	"taunts/props/tightspot3.mp3",
-	"taunts/props/ts_english.mp3",
-	"taunts/props/vincelovemynuts.mp3",
-	"taunts/props/weak.mp3",
-	"taunts/props/werehere.mp3",
-	"taunts/props/whatislove.mp3",
-	"taunts/props/whatthefu.mp3",
-	"taunts/props/whipsomebodysass.mp3",
-	"taunts/props/whoohoo.mp3",
-	"taunts/props/wrong.mp3",
-	"taunts/props/wtf_fmj.mp3",
-	"taunts/props/you_will_never.mp3",
-	"taunts/props/youareabitch.mp3",
-	"taunts/props/yougotskills.mp3",
-	"taunts/props/yousmellfunny.mp3",
-	"taunts/props/dotheflop.mp3",
-	"taunts/props/wellknowwerenotdead.mp3",
-	"taunts/props/arrowtotheknee.mp3",
-	"taunts/props/mchammer.mp3",
-	"taunts/props/ibelieveicanfly.mp3",
-	"taunts/props/walkdino.mp3",
-	"taunts/props/allyoueverdo.mp3",
-	"taunts/props/creeperboom.mp3",
-	"taunts/props/doyousmoke.mp3",
-	"taunts/props/getupoffathatthing.mp3",
-	"taunts/props/ilikebigbutts.mp3",
-	"taunts/props/leedle.mp3",
-	"taunts/props/meatbicycle.mp3",
-	"taunts/props/nannerpuss.mp3",
-	"taunts/props/nooo.mp3",
-	"taunts/props/ohbobsaget.mp3",
-	"taunts/props/ohnoohyeah.mp3",
-	"taunts/props/oneofthesekids.mp3",
-	"taunts/props/pooptrain.mp3",
-	"taunts/props/showmeyourgenitals.mp3",
-	"taunts/props/shunthenonbeliever.mp3",	
-	"taunts/props/anusisbleeding.mp3",
-	"taunts/props/booty.mp3",
-	"taunts/props/crappier.mp3",
-	"taunts/props/cunning.mp3",
-	"taunts/props/dew.mp3",
-	"taunts/props/enterprise.mp3",
-	"taunts/props/fuckingfair.mp3",
-	"taunts/props/headon2.mp3",
-	"taunts/props/imthemap.mp3",
-	"taunts/props/justthrowgrenades.mp3",
-	"taunts/props/nigelaaugh.mp3",
-	"taunts/props/nipplesexplode.mp3",
-	"taunts/props/nowtolookatasses.mp3",
-	"taunts/props/shootmeagain.mp3",
-	"taunts/props/win982.mp3"
+--// Prop net.WriteString(text)
+	local propWString={
+	"rlg/taunts/props/2.wav",
+	"rlg/taunts/props/3.wav",
+	"rlg/taunts/props/4.wav",
+	"rlg/taunts/props/5.wav",
+	"rlg/taunts/props/6.wav",
+	"rlg/taunts/props/7.wav",
+	"rlg/taunts/props/8.wav",
+	"rlg/taunts/props/9.wav",
+	"rlg/taunts/props/10.wav",
+	"rlg/taunts/props/11.wav",
+	"rlg/taunts/props/12.wav",
+	"rlg/taunts/props/14.wav",
+	"rlg/taunts/props/15.wav",
+	"rlg/taunts/props/17.mp3",
+	"rlg/taunts/props/18.wav",
+	"rlg/taunts/props/19.wav",
+	"rlg/taunts/props/20.wav",
+	"rlg/taunts/props/30.wav",
+	"rlg/taunts/props/31.mp3",
+	"rlg/taunts/props/32.mp3",
+	"rlg/taunts/props/33.mp3",
+	"rlg/taunts/props/35.mp3",
+	"rlg/taunts/props/agun.mp3",
+	"rlg/taunts/props/alert2.mp3",
+	"rlg/taunts/props/almostcaught.mp3",
+	"rlg/taunts/props/arch_bloody.mp3",
+	"rlg/taunts/props/arch_dz.mp3",
+	"rlg/taunts/props/attentionwhore.mp3",
+	"rlg/taunts/props/balls.mp3",
+	"rlg/taunts/props/bananasong.mp3",
+	"rlg/taunts/props/barrelroll.mp3",
+	"rlg/taunts/props/beepboopson.mp3",
+	"rlg/taunts/props/beer1.mp3",
+	"rlg/taunts/props/bees1.mp3",
+	"rlg/taunts/props/bennyhill.mp3",
+	"rlg/taunts/props/blow_it.mp3",
+	"rlg/taunts/props/boioing.mp3",
+	"rlg/taunts/props/bollockstoyou.mp3",
+	"rlg/taunts/props/boondocksaints.mp3",
+	"rlg/taunts/props/bugoff.mp3",
+	"rlg/taunts/props/bunchofpansies.mp3",
+	"rlg/taunts/props/bustedstripper.mp3",
+	"rlg/taunts/props/carl.mp3",
+	"rlg/taunts/props/cartmansuck.mp3",
+	"rlg/taunts/props/cell.mp3",
+	"rlg/taunts/props/ch3.mp3",
+	"rlg/taunts/props/charge.mp3",
+	"rlg/taunts/props/cheese.mp3",
+	"rlg/taunts/props/codec2.mp3",
+	"rlg/taunts/props/come_get_some.mp3",
+	"rlg/taunts/props/coolest.mp3",
+	"rlg/taunts/props/cornholio.mp3",
+	"rlg/taunts/props/danceallday.mp3",
+	"rlg/taunts/props/danglyparts.mp3",
+	"rlg/taunts/props/denied.mp3",
+	"rlg/taunts/props/doh.mp3",
+	"rlg/taunts/props/dontjuststandthere.mp3",
+	"rlg/taunts/props/dontmiss.mp3",
+	"rlg/taunts/props/downsyndrome.mp3",
+	"rlg/taunts/props/dr_evil-frickin_idiots.mp3",
+	"rlg/taunts/props/drweird.mp3",
+	"rlg/taunts/props/epicsaxguy.mp3",
+	"rlg/taunts/props/extreme.mp3",
+	"rlg/taunts/props/eyebrow.mp3",
+	"rlg/taunts/props/fail.mp3",
+	"rlg/taunts/props/firinmahlazah.mp3",
+	"rlg/taunts/props/foamydisappointment.mp3",
+	"rlg/taunts/props/foamysuckass.mp3",
+	"rlg/taunts/props/fs.mp3",
+	"rlg/taunts/props/getawayfromme.mp3",
+	"rlg/taunts/props/gofuckurself.mp3",
+	"rlg/taunts/props/goteamretard.mp3",
+	"rlg/taunts/props/haax.mp3",
+	"rlg/taunts/props/hellochum.mp3",
+	"rlg/taunts/props/heresjohnny.mp3",
+	"rlg/taunts/props/hibitch.mp3",
+	"rlg/taunts/props/howdoyoufuckthatup.mp3",
+	"rlg/taunts/props/iamabanana.mp3",
+	"rlg/taunts/props/icphokuspokus.mp3",
+	"rlg/taunts/props/imakethislookgood.mp3",
+	"rlg/taunts/props/improved.mp3",
+	"rlg/taunts/props/indestructible.mp3",
+	"rlg/taunts/props/island.mp3",
+	"rlg/taunts/props/its_a_trap.mp3",
+	"rlg/taunts/props/itssofluffeh.mp3",
+	"rlg/taunts/props/kick_ass_and_chew_bubblegum.mp3",
+	"rlg/taunts/props/knoboff.mp3",
+	"rlg/taunts/props/letsdance.mp3",
+	"rlg/taunts/props/lookatscreen.mp3",
+	"rlg/taunts/props/loser.mp3",
+	"rlg/taunts/props/losinghorn.mp3",
+	"rlg/taunts/props/lrtaunt1.mp3",
+	"rlg/taunts/props/matrix1.mp3",
+	"rlg/taunts/props/mk4_scorpion.mp3",
+	"rlg/taunts/props/morecowbell.mp3",
+	"rlg/taunts/props/needtopiss.mp3",
+	"rlg/taunts/props/nicemodel.mp3",
+	"rlg/taunts/props/nixonshutup.mp3",
+	"rlg/taunts/props/ohbugger.mp3",
+	"rlg/taunts/props/owow.mp3",
+	"rlg/taunts/props/owwhatthe.mp3",
+	"rlg/taunts/props/patbottom.mp3",
+	"rlg/taunts/props/pissin.mp3",
+	"rlg/taunts/props/poopchute.mp3",
+	"rlg/taunts/props/predator.mp3",
+	"rlg/taunts/props/reacharound.mp3",
+	"rlg/taunts/props/readytoget.mp3",
+	"rlg/taunts/props/redvsbluenoeleven.mp3",
+	"rlg/taunts/props/robotchicken.mp3",
+	"rlg/taunts/props/scatman.mp3",
+	"rlg/taunts/props/scout1.mp3",
+	"rlg/taunts/props/screamgoat.mp3",
+	"rlg/taunts/props/seethatcoming.mp3",
+	"rlg/taunts/props/shit.mp3",
+	"rlg/taunts/props/shithimself.mp3",
+	"rlg/taunts/props/shutyourfuckingmouth.mp3",
+	"rlg/taunts/props/slow1.mp3",
+	"rlg/taunts/props/smb_star.mp3",
+	"rlg/taunts/props/smell_u.mp3",
+	"rlg/taunts/props/solong.mp3",
+	"rlg/taunts/props/stopblowingholes.mp3",
+	"rlg/taunts/props/suckstobeme.mp3",
+	"rlg/taunts/props/sweetbeer1.wav",
+	"rlg/taunts/props/thisiscrazy.mp3",
+	"rlg/taunts/props/thx.mp3",
+	"rlg/taunts/props/tightspot2.mp3",
+	"rlg/taunts/props/tightspot3.mp3",
+	"rlg/taunts/props/ts_english.mp3",
+	"rlg/taunts/props/vincelovemynuts.mp3",
+	"rlg/taunts/props/weak.mp3",
+	"rlg/taunts/props/werehere.mp3",
+	"rlg/taunts/props/whatislove.mp3",
+	"rlg/taunts/props/whatthefu.mp3",
+	"rlg/taunts/props/whipsomebodysass.mp3",
+	"rlg/taunts/props/whoohoo.mp3",
+	"rlg/taunts/props/wrong.mp3",
+	"rlg/taunts/props/wtf_fmj.mp3",
+	"rlg/taunts/props/you_will_never.mp3",
+	"rlg/taunts/props/youareabitch.mp3",
+	"rlg/taunts/props/yougotskills.mp3",
+	"rlg/taunts/props/yousmellfunny.mp3",
+	"rlg/taunts/props/dotheflop.mp3",
+	"rlg/taunts/props/wellknowwerenotdead.mp3",
+	"rlg/taunts/props/arrowtotheknee.mp3",
+	"rlg/taunts/props/mchammer.mp3",
+	"rlg/taunts/props/ibelieveicanfly.mp3",
+	"rlg/taunts/props/walkdino.mp3",
+	"rlg/taunts/props/allyoueverdo.mp3",
+	"rlg/taunts/props/creeperboom.mp3",
+	"rlg/taunts/props/doyousmoke.mp3",
+	"rlg/taunts/props/getupoffathatthing.mp3",
+	"rlg/taunts/props/ilikebigbutts.mp3",
+	"rlg/taunts/props/leedle.mp3",
+	"rlg/taunts/props/meatbicycle.mp3",
+	"rlg/taunts/props/nannerpuss.mp3",
+	"rlg/taunts/props/nooo.mp3",
+	"rlg/taunts/props/ohbobsaget.mp3",
+	"rlg/taunts/props/ohnoohyeah.mp3",
+	"rlg/taunts/props/oneofthesekids.mp3",
+	"rlg/taunts/props/pooptrain.mp3",
+	"rlg/taunts/props/showmeyourgenitals.mp3",
+	"rlg/taunts/props/shunthenonbeliever.mp3",	
+	"rlg/taunts/props/anusisbleeding.mp3",
+	"rlg/taunts/props/booty.mp3",
+	"rlg/taunts/props/crappier.mp3",
+	"rlg/taunts/props/cunning.mp3",
+	"rlg/taunts/props/dew.mp3",
+	"rlg/taunts/props/enterprise.mp3",
+	"rlg/taunts/props/fuckingfair.mp3",
+	"rlg/taunts/props/headon2.mp3",
+	"rlg/taunts/props/imthemap.mp3",
+	"rlg/taunts/props/justthrowgrenades.mp3",
+	"rlg/taunts/props/nigelaaugh.mp3",
+	"rlg/taunts/props/nipplesexplode.mp3",
+	"rlg/taunts/props/nowtolookatasses.mp3",
+	"rlg/taunts/props/shootmeagain.mp3",
+	"rlg/taunts/props/win982.mp3",
+	"rlg/taunts/props/bigbootybitches.mp3",
+	"rlg/taunts/props/cantstoptherock.mp3",
+	"rlg/taunts/props/forkinthegarbagedisposal.mp3",
+	"rlg/taunts/props/fucksalt.mp3",
+	"rlg/taunts/props/gaybaconstrips.mp3",
+	"rlg/taunts/props/gimmedatbutt.mp3",
+	"rlg/taunts/props/kallurivaanil.mp3",
+	"rlg/taunts/props/nothavinganymayonnaise.mp3",
+	"rlg/taunts/props/pinkyandthebrain.mp3",
+	"rlg/taunts/props/readingrainbow.mp3",
+	"rlg/taunts/props/spookyscaryskeletons.mp3",
+	"rlg/taunts/props/thebadtouch.mp3",
+	"rlg/taunts/props/nootnoot.mp3",
+	"rlg/taunts/props/somebodykillme.mp3"
 	}
-	
-	local hunterButton={								//Hunter Button text list
+
+--// Hunter Button text list
+	local hunterButton={
 	"You can run, but can't hide",
 	"Come on just die already!",
 	"Crappy shot",
@@ -414,43 +447,49 @@ if ( CLIENT) then
 	"Holy fuck is this wrong!",
 	"Won't hurt you when I catch",
 	"Joker: Dog chasing cars",
-	"Boom Headshot (long)",
 	"Scout: Owning you",
 	"It's showtime",
 	"Farkin' sneaky bastage",
+	"Dr. Tran Toy Cack Geese",
+	"Silence! I Kill You!",
+	"KRS One-Sound of Da Police"
 	}
 
-	local hunterWString={								//Hunter net.WriteString(text)
-	"taunts/hunters/canthide.mp3",
-	"taunts/hunters/comeon.mp3",
-	"taunts/hunters/crappyshot.mp3",
-	"taunts/hunters/donotrun.mp3",
-	"taunts/hunters/foiledagain.mp3",
-	"taunts/hunters/gonnakill.mp3",
-	"taunts/hunters/holyhandgrenade.mp3",
-	"taunts/hunters/isuck.mp3",
-	"taunts/hunters/missed.mp3",
-	"taunts/hunters/ohmygod.mp3",
-	"taunts/hunters/ohnowesuckagain.mp3",
-	"taunts/hunters/pleasefondle.mp3",
-	"taunts/hunters/taken-kill_you.mp3",
-	"taunts/hunters/thepeyote.mp3",
-	"taunts/hunters/watchyourback.mp3",
-	"taunts/hunters/whopainted.mp3",
-	"taunts/hunters/eatlead.mp3",
-	"taunts/hunters/gettingpissedoff.mp3",
-	"taunts/hunters/getwinged.mp3",
-	"taunts/hunters/gogetthem.mp3",
-	"taunts/hunters/holyfuckisthiswrong.mp3",
-	"taunts/hunters/hunterchase.mp3",
-	"taunts/hunters/dogchasingcars.mp3",
-	"taunts/hunters/boomheadshotlong.mp3",
-	"taunts/hunters/owningyou1.mp3",
-	"taunts/hunters/showtime.mp3",
-	"taunts/hunters/sneaky.mp3",
+--//Hunter net.WriteString(text)
+	local hunterWString={
+	"rlg/taunts/hunters/canthide.mp3",
+	"rlg/taunts/hunters/comeon.mp3",
+	"rlg/taunts/hunters/crappyshot.mp3",
+	"rlg/taunts/hunters/donotrun.mp3",
+	"rlg/taunts/hunters/foiledagain.mp3",
+	"rlg/taunts/hunters/gonnakill.mp3",
+	"rlg/taunts/hunters/holyhandgrenade.mp3",
+	"rlg/taunts/hunters/isuck.mp3",
+	"rlg/taunts/hunters/missed.mp3",
+	"rlg/taunts/hunters/ohmygod.mp3",
+	"rlg/taunts/hunters/ohnowesuckagain.mp3",
+	"rlg/taunts/hunters/pleasefondle.mp3",
+	"rlg/taunts/hunters/taken-kill_you.mp3",
+	"rlg/taunts/hunters/thepeyote.mp3",
+	"rlg/taunts/hunters/watchyourback.mp3",
+	"rlg/taunts/hunters/whopainted.mp3",
+	"rlg/taunts/hunters/eatlead.mp3",
+	"rlg/taunts/hunters/gettingpissedoff.mp3",
+	"rlg/taunts/hunters/getwinged.mp3",
+	"rlg/taunts/hunters/gogetthem.mp3",
+	"rlg/taunts/hunters/holyfuckisthiswrong.mp3",
+	"rlg/taunts/hunters/hunterchase.mp3",
+	"rlg/taunts/hunters/dogchasingcars.mp3",
+	"rlg/taunts/hunters/owningyou1.mp3",
+	"rlg/taunts/hunters/showtime.mp3",
+	"rlg/taunts/hunters/sneaky.mp3",
+	"rlg/taunts/hunters/flockofgeese.mp3",
+	"rlg/taunts/hunters/silenceikillyou.mp3",
+	"rlg/taunts/hunters/soundofdapolice.mp3"
 	}
-	
-	function IsAlive(pl)//Checks if player alive & if menu is not open
+
+--//Checks if player alive & if menu is not open
+	function IsAlive(pl)
 		if ( pl:Alive() && pl.MenuOpen !=1 ) then
 				if pl:Team() == TEAM_HUNTERS then
 					hook.Run("phmh",pl)
@@ -476,16 +515,17 @@ if ( CLIENT) then
 				pl.MenuOpen=0;
 			end
 		else
-			chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,126)," You are dead, you need to be alive to use this.")//Chat message for player.
+			chat.AddText(Color(214,0,0),"[Taunt Menu]", Color(0,225,126)," You are dead, you need to be alive to use this.")--//Chat message for player.
 		end	
 	end
-	 
-	function TeamCheck(pl)//Checks player team & opens last visited page by player.
+	
+	--//Checks player team & opens last visited page by player.
+	function TeamCheck(pl)
 		
 	end
 
-	//Props
-	function phmp(pl)//Prop Menu
+--// PROP Taunt Menu
+	function phmp(pl)
 	if not LocalPlayer():IsValid() then
 		teamcolor = Color(0,255,255,255)
 	else
@@ -499,9 +539,9 @@ if ( CLIENT) then
 	local BTCB = math.Clamp((TCB - 50), 0, 255)
 	local MenuColor	= Color(TCR,TCG,TCB,200)
 	local ButtonBGColor	= Color(BTCR,BTCG,BTCB,255)
-		 p1_base = vgui.Create( "DFrame")//Menu Frame.
+		 p1_base = vgui.Create( "DFrame")
 			p1_base:SetSize(176, 571) 
-			p1_base:SetPos(0,(ScrH() / 2)-285)//932, old 779
+			p1_base:SetPos(0,(ScrH() / 2)-285)
 			p1_base:SetTitle(team.GetName( LocalPlayer():Team() ).." - Page " .. pnp)
 			p1_base:SetVisible( true )
 			p1_base:SetDeleteOnClose(false)
@@ -510,11 +550,15 @@ if ( CLIENT) then
 			p1_base:MakePopup()
 			p1_base:SetKeyBoardInputEnabled(false)
 			p1_base:SetMouseInputEnabled(true)
+			if table.Count(propplayedtaunts) > STORED_TAUNTS then
+				table.remove(propplayedtaunts, 1)
+			end
 			p1_base.Paint = function()
 								draw.RoundedBox( 8, 0, 0, p1_base:GetWide(), p1_base:GetTall(), MenuColor )
 							end
-							
-		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Random Taunt Button
+
+--// Random Taunt Button							
+		local p1_base_bX = vgui.Create( "DButton", p1_base )
 			p1_base_bX:SetSize(45, 23)
 			p1_base_bX:SetPos(125, 5)
 			p1_base_bX:SetText("Random")
@@ -525,12 +569,15 @@ if ( CLIENT) then
 									end
 			p1_base_bX.DoClick	=	function()
 								net.Start("send_taunt")
-									net.WriteString(table.Random(propWString))
+									local prt = table.Random(propWString)
+									net.WriteString(prt)
+									table.insert(propplayedtaunts, prt)
 								net.SendToServer()
 								p1_base:Close() pl.MenuOpen=0;
 									end
-									
-		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Close Menu Button
+
+--// Close Menu Button									
+		local p1_base_bX = vgui.Create( "DButton", p1_base )
 			p1_base_bX:SetSize(35, 25)
 			p1_base_bX:SetPos(69, 535)
 			p1_base_bX:SetText("Close")
@@ -543,9 +590,9 @@ if ( CLIENT) then
 										p1_base:Close()
 										pl.MenuOpen=0;
 									end
-									
+--// Previous Page Button									
 		if bnp > 0 then
-		local p1_base_bPrv = vgui.Create( "DButton", p1_base )	//Previous Page Button
+		local p1_base_bPrv = vgui.Create( "DButton", p1_base )
 			p1_base_bPrv:SetSize(55, 25)
 			p1_base_bPrv:SetPos(12, 535)
 			p1_base_bPrv:SetText("Previous")
@@ -566,9 +613,10 @@ if ( CLIENT) then
 											pl.MenuPage2=0;
 										end
 		else end
-		
+
+--//Next Page Button		
 		if bnp < (table.Count(propButton) - 14) then
-		local p1_base_bNxt = vgui.Create( "DButton", p1_base )	//Next Page Button
+		local p1_base_bNxt = vgui.Create( "DButton", p1_base )
 			p1_base_bNxt:SetSize(55, 25)
 			p1_base_bNxt:SetPos(107, 535)
 			p1_base_bNxt:SetText("Next")
@@ -586,9 +634,10 @@ if ( CLIENT) then
 										hook.Run("phmp",pl)
 									end	
 		end
-		
-		if propButton[bnp + 1] != nil then
-		local b1 = vgui.Create("DButton", p1_base)	//Button1
+
+--// Button 1		
+		if propButton[bnp + 1] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 1]) then
+		local b1 = vgui.Create("DButton", p1_base)
 			b1:SetSize(150, 33)
 			b1:SetPos(12,35) 
 			b1:SetText(propButton[bnp + 1]) 
@@ -600,13 +649,19 @@ if ( CLIENT) then
 			b1.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 1])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 1])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 2] != nil then
-		local b2 = vgui.Create( "DButton", p1_base )	//Button2
+
+--// Button 2		
+		if propButton[bnp + 2] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 2]) then
+		local b2 = vgui.Create( "DButton", p1_base )
 			b2:SetSize(150, 33)
 			b2:SetPos(12, 70)
 			b2:SetText(propButton[bnp + 2])
@@ -618,13 +673,19 @@ if ( CLIENT) then
 			b2.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 2])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 2])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 3] != nil then
-		local b3 = vgui.Create( "DButton", p1_base )	//Button3
+
+--// Button 3		
+		if propButton[bnp + 3] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 3]) then
+		local b3 = vgui.Create( "DButton", p1_base )
 			b3:SetSize(150, 33)
 			b3:SetPos(12, 105)
 			b3:SetText(propButton[bnp + 3])
@@ -636,13 +697,19 @@ if ( CLIENT) then
 			b3.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 3])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 3])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 4] != nil then
-		local b4 = vgui.Create( "DButton", p1_base )	//Button4
+
+--// Button 4		
+		if propButton[bnp + 4] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 4]) then
+		local b4 = vgui.Create( "DButton", p1_base )
 			b4:SetSize(150, 33)
 			b4:SetPos(12, 140)
 			b4:SetText(propButton[bnp + 4])
@@ -654,13 +721,19 @@ if ( CLIENT) then
 			b4.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 4])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 4])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 5] != nil then
-		local b5 = vgui.Create( "DButton", p1_base )	//Button5
+
+--// Button 5		
+		if propButton[bnp + 5] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 5]) then
+		local b5 = vgui.Create( "DButton", p1_base )
 			b5:SetSize(150, 33)
 			b5:SetPos(12, 175)
 			b5:SetText(propButton[bnp + 5])
@@ -672,13 +745,19 @@ if ( CLIENT) then
 			b5.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 5])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 5])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 6] != nil then
-		local b6 = vgui.Create( "DButton", p1_base )	//Button6
+
+--// Button 6		
+		if propButton[bnp + 6] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 6]) then
+		local b6 = vgui.Create( "DButton", p1_base )
 			b6:SetSize(150, 33)
 			b6:SetPos(12, 210)
 			b6:SetText(propButton[bnp + 6])
@@ -690,13 +769,19 @@ if ( CLIENT) then
 			b6.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 6])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 6])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 7] != nil then
-		local b7 = vgui.Create( "DButton", p1_base )	//Button7
+
+--// Button 7		
+		if propButton[bnp + 7] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 7]) then
+		local b7 = vgui.Create( "DButton", p1_base )
 			b7:SetSize(150, 33)
 			b7:SetPos(12, 245)
 			b7:SetText(propButton[bnp + 7])
@@ -708,13 +793,19 @@ if ( CLIENT) then
 			b7.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 7])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 7])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 8] != nil then
-		local b8 = vgui.Create( "DButton", p1_base )	//Button8
+
+--// Button 8		
+		if propButton[bnp + 8] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 8]) then
+		local b8 = vgui.Create( "DButton", p1_base )
 			b8:SetSize(150, 33)
 			b8:SetPos(12, 280)
 			b8:SetText(propButton[bnp + 8])
@@ -726,13 +817,19 @@ if ( CLIENT) then
 			b8.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 8])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 8])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 9] != nil then
-		local b9 = vgui.Create( "DButton", p1_base )	//Button9
+
+--// Button 9		
+		if propButton[bnp + 9] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 9]) then
+		local b9 = vgui.Create( "DButton", p1_base )
 			b9:SetSize(150, 33)
 			b9:SetPos(12, 315)
 			b9:SetText(propButton[bnp + 9])
@@ -744,13 +841,19 @@ if ( CLIENT) then
 			b9.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 9])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 9])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 10] != nil then
-		local b10 = vgui.Create( "DButton", p1_base )	//Button10
+
+--// Button 10		
+		if propButton[bnp + 10] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 10]) then
+		local b10 = vgui.Create( "DButton", p1_base )
 			b10:SetSize(150, 33)
 			b10:SetPos(12, 350)
 			b10:SetText(propButton[bnp + 10])
@@ -762,13 +865,19 @@ if ( CLIENT) then
 			b10.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 10])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 10])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 11] != nil then
-		local b11 = vgui.Create( "DButton", p1_base )	//Button11		
+
+--// Button 11		
+		if propButton[bnp + 11] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 11]) then
+		local b11 = vgui.Create( "DButton", p1_base )		
 			b11:SetSize(150, 33)
 			b11:SetPos(12, 385)
 			b11:SetText(propButton[bnp + 11])
@@ -780,13 +889,19 @@ if ( CLIENT) then
 			b11.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 11])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 11])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 12] != nil then
-		local b12 = vgui.Create( "DButton", p1_base )	//Button12
+
+--// Button 12		
+		if propButton[bnp + 12] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 12]) then
+		local b12 = vgui.Create( "DButton", p1_base )
 			b12:SetSize(150, 33)
 			b12:SetPos(12, 420)
 			b12:SetText(propButton[bnp + 12])
@@ -798,13 +913,19 @@ if ( CLIENT) then
 			b12.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 12])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 12])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 13] != nil then
-		local b13 = vgui.Create( "DButton", p1_base )	//Button13
+
+--// Button 13		
+		if propButton[bnp + 13] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 13]) then
+		local b13 = vgui.Create( "DButton", p1_base )
 			b13:SetSize(150, 33)
 			b13:SetPos(12, 455)
 			b13:SetText(propButton[bnp + 13])
@@ -816,13 +937,19 @@ if ( CLIENT) then
 			b13.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 13])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 13])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if propButton[bnp + 14] != nil then
-		local b14 = vgui.Create( "DButton", p1_base )	//Button14
+
+--// Button 14		
+		if propButton[bnp + 14] != nil && not table.HasValue(propplayedtaunts, propWString[bnp + 14]) then
+		local b14 = vgui.Create( "DButton", p1_base )
 			b14:SetSize(150, 33)
 			b14:SetPos(12, 490)
 			b14:SetText(propButton[bnp + 14])
@@ -834,15 +961,20 @@ if ( CLIENT) then
 			b14.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(propWString[bnp + 14])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(propplayedtaunts, propWString[bnp + 14])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
 		
 	end
 	
-		//Hunters
-	function phmh(pl)//Prop Menu
+--// HUNTER Taunt Menu
+	function phmh(pl)--//Hunter Menu
 	if not LocalPlayer():IsValid() then
 		teamcolor = Color(0,255,255,255)
 	else
@@ -856,9 +988,9 @@ if ( CLIENT) then
 	local BTCB = math.Clamp((TCB - 50), 0, 255)
 	local MenuColor	= Color(TCR,TCG,TCB,200)
 	local ButtonBGColor	= Color(BTCR,BTCG,BTCB,255)
-		p1_base = vgui.Create( "DFrame")//Menu Frame.
+		p1_base = vgui.Create( "DFrame")
 			p1_base:SetSize(176, 571) 
-			p1_base:SetPos(0,(ScrH() / 2)-285)//932, old 779
+			p1_base:SetPos(0,(ScrH() / 2)-285)
 			p1_base:SetTitle(team.GetName( LocalPlayer():Team() ).." - Page " .. pnh)
 			p1_base:SetVisible( true )
 			p1_base:SetDeleteOnClose(false)
@@ -867,11 +999,15 @@ if ( CLIENT) then
 			p1_base:MakePopup()
 			p1_base:SetKeyBoardInputEnabled(false)
 			p1_base:SetMouseInputEnabled(true)
+			if table.Count(hunterplayedtaunts) > STORED_TAUNTS then
+				table.remove(hunterplayedtaunts, 1)
+			end
 			p1_base.Paint = function()
 								draw.RoundedBox( 8, 0, 0, p1_base:GetWide(), p1_base:GetTall(), MenuColor )
 							end
-							
-		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Random Taunt Button
+
+--// Random Taunt Button							
+		local p1_base_bX = vgui.Create( "DButton", p1_base )
 			p1_base_bX:SetSize(45, 23)
 			p1_base_bX:SetPos(125, 5)
 			p1_base_bX:SetText("Random")
@@ -882,12 +1018,15 @@ if ( CLIENT) then
 									end
 			p1_base_bX.DoClick	=	function()
 								net.Start("send_taunt")
-									net.WriteString(table.Random(hunterWString))
+									local hrt = table.Random(hunterWString)
+									net.WriteString(hrt)
+									table.insert(hunterplayedtaunts, hrt)
 								net.SendToServer()
 								p1_base:Close() pl.MenuOpen=0;
 									end
-									
-		local p1_base_bX = vgui.Create( "DButton", p1_base )	//Close Menu Button
+
+--// Close Menu Button									
+		local p1_base_bX = vgui.Create( "DButton", p1_base )
 			p1_base_bX:SetSize(35, 25)
 			p1_base_bX:SetPos(69, 535)
 			p1_base_bX:SetText("Close")
@@ -902,8 +1041,9 @@ if ( CLIENT) then
 									end
 		
 		if bnh > 0 then
-		
-		local p1_base_bPrv = vgui.Create( "DButton", p1_base )	//Previous Page Button
+
+--// Previous Page Button		
+		local p1_base_bPrv = vgui.Create( "DButton", p1_base )
 			p1_base_bPrv:SetSize(55, 25)
 			p1_base_bPrv:SetPos(12, 535)
 			p1_base_bPrv:SetText("Previous")
@@ -924,9 +1064,10 @@ if ( CLIENT) then
 											pl.MenuPage2=0;
 										end
 		else end
-		
+
+--// Next Page Button		
 		if bnh < (table.Count(hunterButton) - 14) then
-		local p1_base_bNxt = vgui.Create( "DButton", p1_base )	//Next Page Button
+		local p1_base_bNxt = vgui.Create( "DButton", p1_base )
 			p1_base_bNxt:SetSize(55, 25)
 			p1_base_bNxt:SetPos(107, 535)
 			p1_base_bNxt:SetText("Next")
@@ -944,9 +1085,10 @@ if ( CLIENT) then
 										hook.Run("phmh",pl)
 									end
 		else end
-		
-		if hunterButton[bnh + 1] != nil then
-		local b1 = vgui.Create("DButton", p1_base)	//Button1
+
+--// Button 1		
+		if hunterButton[bnh + 1] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 1]) then
+		local b1 = vgui.Create("DButton", p1_base)
 			b1:SetSize(150, 33)
 			b1:SetPos(12,35) 
 			b1:SetText(hunterButton[bnh + 1]) 
@@ -958,13 +1100,19 @@ if ( CLIENT) then
 			b1.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 1])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 1])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 2] != nil then
-		local b2 = vgui.Create( "DButton", p1_base )	//Button2
+
+--// Button 2		
+		if hunterButton[bnh + 2] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 2]) then
+		local b2 = vgui.Create( "DButton", p1_base )
 			b2:SetSize(150, 33)
 			b2:SetPos(12, 70)
 			b2:SetText(hunterButton[bnh + 2])
@@ -976,13 +1124,19 @@ if ( CLIENT) then
 			b2.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 2])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 2])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 3] != nil then
-		local b3 = vgui.Create( "DButton", p1_base )	//Button3
+
+--// Button 3		
+		if hunterButton[bnh + 3] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 3]) then
+		local b3 = vgui.Create( "DButton", p1_base )
 			b3:SetSize(150, 33)
 			b3:SetPos(12, 105)
 			b3:SetText(hunterButton[bnh + 3])
@@ -994,13 +1148,19 @@ if ( CLIENT) then
 			b3.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 3])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 3])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 4] != nil then
-		local b4 = vgui.Create( "DButton", p1_base )	//Button4
+
+--// Button 4		
+		if hunterButton[bnh + 4] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 4]) then
+		local b4 = vgui.Create( "DButton", p1_base )
 			b4:SetSize(150, 33)
 			b4:SetPos(12, 140)
 			b4:SetText(hunterButton[bnh + 4])
@@ -1012,13 +1172,19 @@ if ( CLIENT) then
 			b4.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 4])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 4])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 5] != nil then
-		local b5 = vgui.Create( "DButton", p1_base )	//Button5
+
+--// Button 5		
+		if hunterButton[bnh + 5] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 5]) then
+		local b5 = vgui.Create( "DButton", p1_base )
 			b5:SetSize(150, 33)
 			b5:SetPos(12, 175)
 			b5:SetText(hunterButton[bnh + 5])
@@ -1030,13 +1196,19 @@ if ( CLIENT) then
 			b5.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 5])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 5])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 6] != nil then
-		local b6 = vgui.Create( "DButton", p1_base )	//Button6
+
+--// Button 6		
+		if hunterButton[bnh + 6] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 6]) then
+		local b6 = vgui.Create( "DButton", p1_base )
 			b6:SetSize(150, 33)
 			b6:SetPos(12, 210)
 			b6:SetText(hunterButton[bnh + 6])
@@ -1048,13 +1220,19 @@ if ( CLIENT) then
 			b6.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 6])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 6])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 7] != nil then
-		local b7 = vgui.Create( "DButton", p1_base )	//Button7
+
+--// Button 7		
+		if hunterButton[bnh + 7] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 7]) then
+		local b7 = vgui.Create( "DButton", p1_base )
 			b7:SetSize(150, 33)
 			b7:SetPos(12, 245)
 			b7:SetText(hunterButton[bnh + 7])
@@ -1066,13 +1244,19 @@ if ( CLIENT) then
 			b7.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 7])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 7])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 8] != nil then
-		local b8 = vgui.Create( "DButton", p1_base )	//Button8
+
+--// Button 8		
+		if hunterButton[bnh + 8] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 8]) then
+		local b8 = vgui.Create( "DButton", p1_base )
 			b8:SetSize(150, 33)
 			b8:SetPos(12, 280)
 			b8:SetText(hunterButton[bnh + 8])
@@ -1084,13 +1268,19 @@ if ( CLIENT) then
 			b8.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 8])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 8])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 9] != nil then
-		local b9 = vgui.Create( "DButton", p1_base )	//Button9
+
+--// Button 9		
+		if hunterButton[bnh + 9] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 9]) then
+		local b9 = vgui.Create( "DButton", p1_base )
 			b9:SetSize(150, 33)
 			b9:SetPos(12, 315)
 			b9:SetText(hunterButton[bnh + 9])
@@ -1102,13 +1292,19 @@ if ( CLIENT) then
 			b9.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 9])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 9])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 10] != nil then
-		local b10 = vgui.Create( "DButton", p1_base )	//Button10
+
+--// Button 10		
+		if hunterButton[bnh + 10] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 10]) then
+		local b10 = vgui.Create( "DButton", p1_base )
 			b10:SetSize(150, 33)
 			b10:SetPos(12, 350)
 			b10:SetText(hunterButton[bnh + 10])
@@ -1120,13 +1316,19 @@ if ( CLIENT) then
 			b10.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 10])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 10])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 11] != nil then
-		local b11 = vgui.Create( "DButton", p1_base )	//Button11		
+
+--// Button 11		
+		if hunterButton[bnh + 11] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 11]) then
+		local b11 = vgui.Create( "DButton", p1_base )		
 			b11:SetSize(150, 33)
 			b11:SetPos(12, 385)
 			b11:SetText(hunterButton[bnh + 11])
@@ -1138,13 +1340,19 @@ if ( CLIENT) then
 			b11.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 11])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 11])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 12] != nil then
-		local b12 = vgui.Create( "DButton", p1_base )	//Button12
+
+--// Button 12		
+		if hunterButton[bnh + 12] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 12]) then
+		local b12 = vgui.Create( "DButton", p1_base )
 			b12:SetSize(150, 33)
 			b12:SetPos(12, 420)
 			b12:SetText(hunterButton[bnh + 12])
@@ -1156,13 +1364,19 @@ if ( CLIENT) then
 			b12.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 12])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 12])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 13] != nil then
-		local b13 = vgui.Create( "DButton", p1_base )	//Button13
+
+--// Button 13		
+		if hunterButton[bnh + 13] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 13]) then
+		local b13 = vgui.Create( "DButton", p1_base )
 			b13:SetSize(150, 33)
 			b13:SetPos(12, 455)
 			b13:SetText(hunterButton[bnh + 13])
@@ -1174,13 +1388,19 @@ if ( CLIENT) then
 			b13.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 13])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 13])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
-		
-		if hunterButton[bnh + 14] != nil then
-		local b14 = vgui.Create( "DButton", p1_base )	//Button14
+
+--// Button 14		
+		if hunterButton[bnh + 14] != nil && not table.HasValue(hunterplayedtaunts, hunterWString[bnh + 14]) then
+		local b14 = vgui.Create( "DButton", p1_base )
 			b14:SetSize(150, 33)
 			b14:SetPos(12, 490)
 			b14:SetText(hunterButton[bnh + 14])
@@ -1192,16 +1412,21 @@ if ( CLIENT) then
 			b14.DoClick	=	function () 
 								net.Start("send_taunt")
 									net.WriteString(hunterWString[bnh + 14])
-								net.SendToServer()
+									if pl:GetNWFloat("nexttaunt") < CurTime() then
+										table.insert(hunterplayedtaunts, hunterWString[bnh + 14])
+										net.SendToServer()
+									else
+										net.SendToServer()
+									end
 								p1_base:Close() pl.MenuOpen=0;
 							end
 		else end
 	end
 	
-	//Hook List 
-	hook.Add("phmp","Calling Prop Menu",phmp)//Hook to call phmp(Props)
-	hook.Add("phmh","Calling Prop Menu",phmh)//Hook to call phmh(Hunters)
-	hook.Add("TeamCheck","Call check pl.Team()",TeamCheck)//Hook to call TeamCheck
+--// Hook List 
+	hook.Add("phmp","Calling Prop Menu",phmp) --//Hook to call phmp(Props)
+	hook.Add("phmh","Calling Prop Menu",phmh) --//Hook to call phmh(Hunters)
+	hook.Add("TeamCheck","Call check pl.Team()",TeamCheck) --//Hook to call TeamCheck
 	
 	function showspare( ply, bind, pressed )
 		if ( bind == "gm_showspare1" ) then
@@ -1213,9 +1438,13 @@ if ( CLIENT) then
 	hook.Add( "OnContextMenuOpen", "RandTaunt", function()
 			net.Start("send_taunt")
 			if LocalPlayer():Team() == TEAM_HUNTERS then
-				net.WriteString(table.Random(hunterWString))
+				local hrt = table.Random(hunterWString)
+				net.WriteString(hrt)
+				table.insert(hunterplayedtaunts, hrt)
 			elseif LocalPlayer():Team() == TEAM_PROPS then
-				net.WriteString(table.Random(propWString))
+				local prt = table.Random(propWString)
+				net.WriteString(prt)
+				table.insert(propplayedtaunts, prt)
 			end
 			net.SendToServer();
 	end);

@@ -1,5 +1,5 @@
 if ( SERVER )	then 
---//	TAUNT_DELAY = 6		//Taunt Delay Variable
+	TAUNT_DELAY = 6		//Taunt Delay Variable
 	util.AddNetworkString("send_taunt")
 	net.Receive( "send_taunt", function( _, ply )
 		local taunt = net.ReadString()

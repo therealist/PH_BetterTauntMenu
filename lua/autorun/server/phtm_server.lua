@@ -1,17 +1,21 @@
 if ( SERVER )	then 
-	local TAUNT_DELAY = 6		//Taunt Delay Variable
-
+--//	TAUNT_DELAY = 6		//Taunt Delay Variable
 	util.AddNetworkString("send_taunt")
 	net.Receive( "send_taunt", function( _, ply )
 		local taunt = net.ReadString()
-		local curTime = CurTime()
-		if curTime - ( ply.LastTaunt or 0 ) >= TAUNT_DELAY then
-			ply.LastTaunt = CurTime() + TAUNT_DELAY
+		local curtime = CurTime()
+		if CurTime() > ply:GetNWFloat("nexttaunt") then
 			if ply:Alive() then
+				local timestaunted = ply:GetNWInt("timestaunted")
+				timestaunted = timestaunted + 1
 				ply:EmitSound(taunt,150)
-			else end
+				ply:SetNWFloat("lasttaunt", CurTime())
+				ply:SetNWFloat("nexttaunt", CurTime() + TAUNT_DELAY)
+				ply:SetNWInt("timestaunted", timestaunted)
+				ply.nexttaunt = CurTime() + TAUNT_DELAY
+			end
 		else
-			ply:ChatPrint("Please wait another " .. string.NiceTime( math.abs( curTime - (TAUNT_DELAY + ply.LastTaunt) ) ) .. " seconds before taunting again")
+			ply:ChatPrint("Please wait before taunting again")
 		end
 	end )
 end

@@ -481,7 +481,6 @@ local HUNTER_TAUNTS = {
 				net.WriteString(name)
 				net.WriteFloat(length)
 				table.insert(propplayedtaunts, rt[2])
-				LocalPlayer():ChatPrint(table.Count(propplayedtaunts))
 			end
 			net.SendToServer()
 	end)

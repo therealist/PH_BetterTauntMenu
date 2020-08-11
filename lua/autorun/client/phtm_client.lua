@@ -39,7 +39,7 @@ if ( CLIENT) then
 --// FORMAT: {"Button Name", "path/to/file.wav", 0.00000000},
 --// Tabulation shows properly on Notepad++
 --// Prop Taunt List (not needed if set as a global table in Prop Hunt sh_config file)
-local proptauntlist = {
+local PROP_TAUNTS = {
 	{"Homer Doh",							"rlg/taunts/props/2.wav", 							0.7494784593582},
 	{"Go away or I shall taunt",			"rlg/taunts/props/3.wav", 							3.7144670486450},
 	{"Shamwow",								"rlg/taunts/props/4.wav", 							4.0671200752258},
@@ -235,7 +235,7 @@ local proptauntlist = {
 }
 
 --// Hunter Taunt List (not needed if set as a global table in Prop Hunt sh_config file)
-local huntertauntlist = {
+local HUNTER_TAUNTS = {
 	{"You can run, but can't hide",			"rlg/taunts/hunters/canthide.mp3", 					2.4032652378082},
 	{"Come on just die already!",			"rlg/taunts/hunters/comeon.mp3", 					2.9779591560364},
 	{"Crappy shot",							"rlg/taunts/hunters/crappyshot.mp3", 				3.9444897174835},

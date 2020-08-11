@@ -455,7 +455,7 @@ local HUNTER_TAUNTS = {
 	end
 
 	--// Hook List 
-	hook.Add("ptm","Calling Prop Menu",ptm) --//Hook to call ptm(Hunters)
+	hook.Add("ptm","Calling Prop Menu",ptm) --//Hook to call ptm
 	hook.Add("TeamCheck","Call check pl.Team()",TeamCheck) --//Hook to call TeamCheck
 	
 	function showspare( ply, bind, pressed )

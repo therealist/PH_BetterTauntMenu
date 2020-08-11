@@ -356,10 +356,10 @@ local HUNTER_TAUNTS = {
 									end
 			p1_base_bX.DoClick	=	function()
 								net.Start("send_taunt")
-									local rt = table.Random(tauntlist)[2]
-									net.WriteString(rt)
-									net.WriteString(rt[3])
-									table.insert(playedtaunts, rt)
+									local rt = table.Random(tauntlist)
+									net.WriteString(rt[2])
+									net.WriteFloat(rt[3])
+									table.insert(playedtaunts, rt[2])
 								net.SendToServer()
 								p1_base:Close() pl.MenuOpen=0;
 									end
@@ -455,7 +455,7 @@ local HUNTER_TAUNTS = {
 	end
 
 	--// Hook List 
-	hook.Add("ptm","Calling Prop Menu",ptm) --//Hook to call ptm
+	hook.Add("ptm","Calling Prop Menu",ptm) --//Hook to call ptm(Hunters)
 	hook.Add("TeamCheck","Call check pl.Team()",TeamCheck) --//Hook to call TeamCheck
 	
 	function showspare( ply, bind, pressed )

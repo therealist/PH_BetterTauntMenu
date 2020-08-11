@@ -306,10 +306,10 @@ local huntertauntlist = {
 	playedtaunts = {}
 	
 	if LocalPlayer():Team() == TEAM_HUNTERS then
-		tauntlist = huntertauntlist
+		tauntlist = HUNTER_TAUNTS
 		playedtaunts = hunterplayedtaunts
 	elseif LocalPlayer():Team() == TEAM_PROPS then
-		tauntlist = proptauntlist
+		tauntlist = PROP_TAUNTS
 		playedtaunts = propplayedtaunts
 	else
 	end
@@ -467,20 +467,21 @@ local huntertauntlist = {
 	
 	hook.Add( "OnContextMenuOpen", "RandTaunt", function()
 			net.Start("send_taunt")
-			if LocalPlayer():Team() == TEAM_HUNTERS then
-				local hrt = table.Random(huntertauntlist)
-				name = hrt[2]
-				length = hrt[3]
+			if LocalPlayer():Team() == TEAM_HUNTERS && (CurTime() > ply:GetNWFloat("nexttaunt")) then
+				local rt = table.Random(HUNTER_TAUNTS)
+				name = rt[2]
+				length = rt[3]
 				net.WriteString(name)
 				net.WriteFloat(length)
-				table.insert(hunterplayedtaunts, hrt[2])
-			elseif LocalPlayer():Team() == TEAM_PROPS then
-				local prt = table.Random(proptauntlist)
-				name = prt[2]
-				length = prt[3]
+				table.insert(hunterplayedtaunts, rt[2])
+			elseif LocalPlayer():Team() == TEAM_PROPS && (CurTime() > ply:GetNWFloat("nexttaunt")) then
+				local rt = table.Random(PROP_TAUNTS)
+				name = rt[2]
+				length = rt[3]
 				net.WriteString(name)
 				net.WriteFloat(length)
-				table.insert(propplayedtaunts, prt[2])
+				table.insert(propplayedtaunts, rt[2])
+				LocalPlayer():ChatPrint(table.Count(propplayedtaunts))
 			end
 			net.SendToServer()
 	end)
